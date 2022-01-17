@@ -1,24 +1,34 @@
-import { Grid, IconButton, Paper, Typography } from '@mui/material'
-import BookmarkIcon from '@mui/icons-material/Bookmark'
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import HeartBrokenIcon from '@mui/icons-material/HeartBroken'
+import {
+  Card,
+  CardActionArea,
+  Collapse,
+  Grid,
+  IconButton,
+  Paper,
+  Typography,
+} from '@mui/material'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined'
+import VideocamTwoToneIcon from '@mui/icons-material/VideocamTwoTone'
 import makeStyles from '@mui/styles/makeStyles'
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useState } from 'react'
 import { NasaImageMetadata } from '../models'
 import { observer } from 'mobx-react'
-import { useImageContext } from '../hooks'
-import clsx from 'clsx'
-import { cacheImageLike, removeImageLike } from '../utils'
+import { useImageContext, useModal } from '../hooks'
+import { FadeIn, LoadingImage, YoutubeEmbed } from '../ui'
+import { LikeButton } from '../ui/LikeButton'
+import { ImageModal } from './ImageModal'
+import { getDateString } from '../utils'
 
 const useStyles = makeStyles({
+  root: {
+    margin: '20px 0',
+  },
   imageThumbnail: {
     width: '100%',
     borderTopLeftRadius: '5px',
     borderTopRightRadius: '5px',
   },
-  likedImageStyle: { color: 'red' },
 })
 
 interface ImageCardProps {
@@ -30,7 +40,9 @@ const BaseImageCard: FunctionComponent<ImageCardProps> = ({
   image,
   isLiked,
 }) => {
-  const { imageThumbnail, likedImageStyle } = useStyles()
+  const { root, imageThumbnail } = useStyles()
+  const { open, handleOpen, handleClose } = useModal()
+  const [textWrap, setTextWrap] = useState(true)
   const { likeImage, unlikeImage } = useImageContext()
 
   const isVideo = image.media_type === 'video'
@@ -44,37 +56,103 @@ const BaseImageCard: FunctionComponent<ImageCardProps> = ({
   }
 
   return (
-    <Grid container item xs={12} justifyContent={'center'}>
-      <Paper style={{ width: '30%' }}>
-        <img
-          className={imageThumbnail}
-          alt={image.title}
-          src={isVideo ? image.thumbnail_url : image.url}
-        />
-        <IconButton
-          style={{}}
-          onClick={handleLike}
-          className={clsx(isLiked && `${likedImageStyle} likedAnimation`)}
-          children={isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-        />
-        <Typography
-          variant='body1'
-          component='h2'
-          style={{ fontWeight: 'bold' }}
-        >
-          {image.title}
-        </Typography>
-        <Typography noWrap variant='subtitle2' component='h3'>
-          {image.explanation}
-        </Typography>
-        <Typography
-          variant='body1'
-          component='h2'
-          style={{ fontWeight: 'bold' }}
-        >
-          {image.date}
-        </Typography>
-      </Paper>
+    <Grid className={root} container item xs={12} justifyContent={'center'}>
+      <FadeIn>
+        <Card style={{ width: '35rem' }}>
+          <ImageModal
+            open={open}
+            handleClose={handleClose}
+            image={image}
+            handleLike={handleLike}
+            isLiked={isLiked}
+          />
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+            }}
+          >
+            <CardActionArea onClick={() => handleOpen()}>
+              <LoadingImage
+                className={imageThumbnail}
+                alt={image.title}
+                src={isVideo ? image.thumbnail_url : image.url}
+                width='100%'
+              />
+              {isVideo && (
+                <VideocamTwoToneIcon
+                  fontSize='large'
+                  style={{
+                    color: 'white',
+                    position: 'absolute',
+                    bottom: '1%',
+                    right: '1%',
+                  }}
+                />
+              )}
+            </CardActionArea>
+            <div
+              style={{
+                background: '#777777',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                border: '0.5px solid black',
+              }}
+            >
+              <LikeButton isLiked={isLiked} handleLike={handleLike} />
+              <Typography
+                variant='caption'
+                component='h2'
+                style={{
+                  fontWeight: 'bold',
+                  marginRight: '10px',
+                }}
+              >
+                {getDateString(image.date)}
+              </Typography>
+            </div>
+          </div>
+          <div style={{ padding: '10px' }}>
+            <Typography
+              variant='body1'
+              component='h2'
+              style={{ fontWeight: 'bold', width: '100%' }}
+            >
+              {image.title}
+            </Typography>
+            <Collapse in={!textWrap} collapsedSize={48}>
+              <Typography
+                onClick={() => setTextWrap((prev) => !prev)}
+                variant='subtitle2'
+                component='h3'
+                lineHeight='normal'
+              >
+                {image.explanation}
+              </Typography>
+            </Collapse>
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <IconButton
+                size='small'
+                style={{
+                  transform: textWrap ? undefined : 'rotate(180deg)',
+                  marginBottom: '-10px',
+                  marginTop: '-5px',
+                }}
+                onClick={() => setTextWrap((prev) => !prev)}
+                children={<ArrowDropDownIcon />}
+              />
+            </div>
+          </div>
+        </Card>
+      </FadeIn>
     </Grid>
   )
 }

@@ -20,23 +20,38 @@ body,
   height: 100%;
 }
 
-.unlikedAnimation {
-}
-
 .likedAnimation {
-  animation: fade1 0.2s linear;
+  animation: fade 0.2s linear;
 }
 
-@keyframes fade1 {
+@keyframes fade {
   0% {
-    /* opacity: 0; */
     transform: scale(0);
   }
   70% {
     transform: scale(1.5);
   }
   100% {
-    /* opacity: 1; */
     transform: scale(1);
   }
+}
+
+.skip-to-content-link {
+  /* background: #e77e23; */
+  height: 30px;
+  left: 12%;
+  padding: 8px;
+  position: absolute;
+  transform: translateY(-1000%);
+  transition: transform 0.3s;
+  color: white;
+  border: 1px solid white;
+}
+
+.skip-to-content-link:focus {
+  transform: translateY(0%);
+}
+
+.skip-to-content-text {
+  color: white;
 }

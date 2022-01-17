@@ -1,48 +1,64 @@
-import { Grid, Typography } from '@mui/material'
+import { Grid } from '@mui/material'
+import { RouteComponentProps } from '@reach/router'
 import { observer } from 'mobx-react'
 import { FunctionComponent, useEffect, useState } from 'react'
 import { useImageContext } from '../hooks'
 import { getImages } from '../injectables'
-import { NasaImageMetadata } from '../models'
+import { UISkeleton } from '../ui'
+import { dateToYYYYMMDD, sortNasaImageByDate } from '../utils'
 import { ImageCard } from './ImageCard'
-import { NavigationBar } from './NavigationBar'
 
-const BaseContent: FunctionComponent = () => {
-  const { likedImages } = useImageContext()
-  const [images, setImages] = useState<NasaImageMetadata[]>([])
+const BaseContent: FunctionComponent<RouteComponentProps> = () => {
+  const {
+    likedImageSet: likedImages,
+    allImages,
+    setAllImages,
+  } = useImageContext()
+  const [fetchingImages, setFetchingImages] = useState(false)
 
   useEffect(() => {
     const fetchImages = async () => {
-      const { data } = await getImages({
-        start_date: '2021-01-01',
-        end_date: '2021-01-09',
-      })
-      setImages(data)
-    }
-    fetchImages()
-  }, [])
+      setFetchingImages(true)
 
-  return (
+      const today = new Date()
+      const lastMonth = new Date()
+      lastMonth.setMonth(lastMonth.getMonth() - 1)
+      const start_date = dateToYYYYMMDD(lastMonth)
+      const end_date = dateToYYYYMMDD(today)
+
+      const { data } = await getImages({
+        start_date,
+        end_date,
+      })
+      const sortedImages = data.sort(sortNasaImageByDate)
+      setFetchingImages(false)
+      setAllImages(sortedImages)
+    }
+    if (!allImages.length) fetchImages()
+  }, [allImages, setAllImages])
+
+  return fetchingImages ? (
     <div
+      id='main'
       style={{
+        width: '100%',
         display: 'flex',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
         flexDirection: 'column',
-        backgroundColor: '#dddddd',
+        alignItems: 'center',
       }}
     >
-      <NavigationBar />
-      <Grid container spacing={4}>
-        {images.map((image) => (
-          <ImageCard
-            key={image.date}
-            image={image}
-            isLiked={likedImages.has(image.date)}
-          />
-        ))}
-      </Grid>
+      <UISkeleton heights={Array(2).fill(600)} />
     </div>
+  ) : (
+    <Grid container spacing={4} style={{ marginTop: '4%' }}>
+      {allImages.map((image) => (
+        <ImageCard
+          key={image.date}
+          image={image}
+          isLiked={likedImages.has(image.date)}
+        />
+      ))}
+    </Grid>
   )
 }
 

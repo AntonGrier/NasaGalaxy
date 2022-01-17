@@ -1,0 +1,54 @@
+import { Grid } from '@mui/material'
+import { RouteComponentProps } from '@reach/router'
+import { observer } from 'mobx-react'
+import { FunctionComponent, useEffect, useState } from 'react'
+import { useImageContext } from '../hooks'
+import { getImage } from '../injectables'
+import { UISkeleton } from '../ui'
+import { sortNasaImageByDate } from '../utils'
+import { ImageCard } from './ImageCard'
+
+const BaseLikedList: FunctionComponent<RouteComponentProps> = () => {
+  const [fetchingImages, setFetchingImages] = useState(false)
+  const { likedImageSet, likedImages, setLikedImages } = useImageContext()
+
+  useEffect(() => {
+    const fetchLikedImages = async () => {
+      setFetchingImages(true)
+      const imageDates = Array.from(likedImageSet)
+      const promises = imageDates.map((date) => getImage({ date }))
+      const res = await Promise.all(promises)
+      const dates = res
+        .map((response) => response.data)
+        .sort(sortNasaImageByDate)
+      setLikedImages(dates)
+      setFetchingImages(false)
+    }
+    fetchLikedImages()
+  }, [likedImageSet, setLikedImages])
+
+  return fetchingImages ? (
+    <div
+      style={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      <UISkeleton heights={Array(2).fill(600)} />
+    </div>
+  ) : (
+    <Grid container spacing={4} style={{ marginTop: '4%' }}>
+      {likedImages.map((image) => (
+        <ImageCard
+          key={image.date}
+          image={image}
+          isLiked={likedImageSet.has(image.date)}
+        />
+      ))}
+    </Grid>
+  )
+}
+
+export const LikedList = observer(BaseLikedList)

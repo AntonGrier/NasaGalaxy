@@ -1,37 +1,52 @@
 import { action, makeAutoObservable, observable } from 'mobx'
 import { createContext, FunctionComponent, useContext } from 'react'
+import { NasaImageMetadata } from '../../models'
 import { cacheImageLike, getCachedLikes, removeImageLike } from '../../utils'
 
 interface IImageStore {
-  likedImages: Set<string>
+  allImages: NasaImageMetadata[]
+  likedImages: NasaImageMetadata[]
+  likedImageSet: Set<string>
 }
 
 export class ImageStore implements IImageStore {
-  @observable likedImages: Set<string>
+  @observable allImages: NasaImageMetadata[]
+  @observable likedImages: NasaImageMetadata[]
+  @observable likedImageSet: Set<string>
 
   constructor() {
     makeAutoObservable(this)
-    this.likedImages = new Set()
+    this.allImages = []
+    this.likedImages = []
+    this.likedImageSet = new Set()
     this.reloadCachedImages()
   }
 
   @action reloadCachedImages = () => {
     const cachedLikedImages = getCachedLikes()
-    this.likedImages.clear()
+    this.likedImageSet.clear()
 
     for (const cachedImage of cachedLikedImages) {
-      this.likedImages.add(cachedImage)
+      this.likedImageSet.add(cachedImage)
     }
+  }
+
+  @action setAllImages = (images: NasaImageMetadata[]) => {
+    this.allImages = images
+  }
+
+  @action setLikedImages = (images: NasaImageMetadata[]) => {
+    this.likedImages = images
   }
 
   @action likeImage = (imageDate: string) => {
     cacheImageLike(imageDate)
-    this.likedImages.add(imageDate)
+    this.likedImageSet.add(imageDate)
   }
 
   @action unlikeImage = (imageDate: string) => {
     removeImageLike(imageDate)
-    this.likedImages.delete(imageDate)
+    this.likedImageSet.delete(imageDate)
   }
 }
 

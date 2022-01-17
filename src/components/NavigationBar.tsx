@@ -1,27 +1,74 @@
-import { FunctionComponent } from 'react'
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
+import { FunctionComponent, ReactElement } from 'react'
+import { navigate } from '@reach/router'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import { Typography } from '@mui/material'
+import {
+  AppBar,
+  Button,
+  IconButton,
+  Link,
+  Toolbar,
+  Typography,
+  useScrollTrigger,
+} from '@mui/material'
+import Slide from '@mui/material/Slide'
 
-export const NavigationBar: FunctionComponent = () => {
+const HideOnScroll: FunctionComponent = ({ children }) => {
+  const trigger = useScrollTrigger()
+
   return (
-    <div
-      style={{
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'space-between',
-        backgroundColor: '#5C5C5C',
-        marginBottom: '20px',
-      }}
-    >
-      <div>
-        <Typography color='white' variant='h5' component='h1'>
-          Starbound
-        </Typography>
-      </div>
-      <div>
-        <FavoriteBorderIcon /> <BookmarkBorderIcon />
-      </div>
-    </div>
+    <Slide appear={false} direction='down' in={!trigger}>
+      {children as ReactElement}
+    </Slide>
+  )
+}
+
+export const NavigationBar: FunctionComponent = ({ children }) => {
+  return (
+    <>
+      <HideOnScroll>
+        <AppBar
+          style={{
+            backgroundColor: 'black',
+          }}
+        >
+          <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div>
+              <Button
+                onClick={() => navigate('/')}
+                style={{ padding: '0 10px' }}
+              >
+                <Typography
+                  style={{ fontFamily: 'fantasy' }}
+                  color='white'
+                  variant='h4'
+                  component='h1'
+                >
+                  Starbound
+                </Typography>
+              </Button>
+              <Link
+                href='#main'
+                className='skip-to-content-link'
+                underline='none'
+              >
+                <Typography
+                  className='skip-to-content-text'
+                  variant='h6'
+                  component='h2'
+                >
+                  Skip to content
+                </Typography>
+              </Link>
+            </div>
+            <IconButton
+              onClick={() => navigate('/liked')}
+              style={{ color: 'white' }}
+              children={<FavoriteBorderIcon />}
+            />
+          </Toolbar>
+        </AppBar>
+      </HideOnScroll>
+      {children}
+    </>
   )
 }
