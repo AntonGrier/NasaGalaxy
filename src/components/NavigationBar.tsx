@@ -36,6 +36,7 @@ export const NavigationBar: FunctionComponent = ({ children }) => {
               <Button
                 onClick={() => navigate('/')}
                 style={{ padding: '0 10px' }}
+                aria-label={'Navigate Home'}
               >
                 <Typography
                   style={{ fontFamily: 'fantasy' }}
@@ -56,12 +57,13 @@ export const NavigationBar: FunctionComponent = ({ children }) => {
                   variant='h6'
                   component='h2'
                 >
-                  Skip to content
+                  Skip to Content
                 </Typography>
               </Link>
             </div>
             <IconButton
               onClick={() => navigate('/liked')}
+              aria-label='Navigate to Liked posts'
               style={{ color: 'white' }}
               children={<FavoriteBorderIcon />}
             />

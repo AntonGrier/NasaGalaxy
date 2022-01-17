@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import { RouteComponentProps } from '@reach/router'
 import { observer } from 'mobx-react'
 import { FunctionComponent, useEffect, useState } from 'react'
@@ -27,27 +27,43 @@ const BaseLikedList: FunctionComponent<RouteComponentProps> = () => {
     fetchLikedImages()
   }, [likedImageSet, setLikedImages])
 
-  return fetchingImages ? (
-    <div
-      style={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
-      <UISkeleton heights={Array(2).fill(600)} />
-    </div>
-  ) : (
-    <Grid container spacing={4} style={{ marginTop: '4%' }}>
-      {likedImages.map((image) => (
-        <ImageCard
-          key={image.date}
-          image={image}
-          isLiked={likedImageSet.has(image.date)}
-        />
-      ))}
-    </Grid>
+  return (
+    <>
+      <Typography
+        component='h2'
+        variant='h4'
+        style={{
+          marginTop: '100px',
+          width: '100%',
+          textAlign: 'center',
+          fontWeight: 'bold',
+        }}
+      >
+        Liked Posts
+      </Typography>
+      {fetchingImages ? (
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <UISkeleton heights={Array(2).fill(600)} />
+        </div>
+      ) : (
+        <Grid id='main' container spacing={4} style={{ marginTop: '10px' }}>
+          {likedImages.map((image) => (
+            <ImageCard
+              key={image.date}
+              image={image}
+              isLiked={likedImageSet.has(image.date)}
+            />
+          ))}
+        </Grid>
+      )}
+    </>
   )
 }
 

@@ -4,18 +4,16 @@ import {
   Collapse,
   Grid,
   IconButton,
-  Paper,
   Typography,
 } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined'
 import VideocamTwoToneIcon from '@mui/icons-material/VideocamTwoTone'
 import makeStyles from '@mui/styles/makeStyles'
 import { FunctionComponent, useState } from 'react'
 import { NasaImageMetadata } from '../models'
 import { observer } from 'mobx-react'
 import { useImageContext, useModal } from '../hooks'
-import { FadeIn, LoadingImage, YoutubeEmbed } from '../ui'
+import { FadeIn, LoadingImage } from '../ui'
 import { LikeButton } from '../ui/LikeButton'
 import { ImageModal } from './ImageModal'
 import { getDateString } from '../utils'
@@ -73,7 +71,10 @@ const BaseImageCard: FunctionComponent<ImageCardProps> = ({
               justifyContent: 'flex-start',
             }}
           >
-            <CardActionArea onClick={() => handleOpen()}>
+            <CardActionArea
+              onClick={() => handleOpen()}
+              aria-label={`Open Modal for post: ${image.title}`}
+            >
               <LoadingImage
                 className={imageThumbnail}
                 alt={image.title}
@@ -101,10 +102,14 @@ const BaseImageCard: FunctionComponent<ImageCardProps> = ({
                 border: '0.5px solid black',
               }}
             >
-              <LikeButton isLiked={isLiked} handleLike={handleLike} />
+              <LikeButton
+                title={image.title}
+                isLiked={isLiked}
+                handleLike={handleLike}
+              />
               <Typography
                 variant='caption'
-                component='h2'
+                component='h3'
                 style={{
                   fontWeight: 'bold',
                   marginRight: '10px',
@@ -140,6 +145,10 @@ const BaseImageCard: FunctionComponent<ImageCardProps> = ({
               }}
             >
               <IconButton
+                aria-expanded={!textWrap}
+                aria-label={`${
+                  textWrap ? 'Expand' : 'Collapse'
+                } description of post: ${image.title}`}
                 size='small'
                 style={{
                   transform: textWrap ? undefined : 'rotate(180deg)',

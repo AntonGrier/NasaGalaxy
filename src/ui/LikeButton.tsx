@@ -17,16 +17,19 @@ const useStyles = makeStyles({
 interface LikeButtonProps {
   isLiked: boolean
   handleLike: () => void
+  title: string
 }
 
 export const LikeButton: FunctionComponent<LikeButtonProps> = ({
   isLiked,
   handleLike,
+  title,
 }) => {
   const { likedImageStyle } = useStyles()
 
   return (
     <IconButton
+      aria-label={`${isLiked ? 'Dislike' : 'Like'} post: ${title}`}
       onClick={handleLike}
       className={clsx(
         isLiked ? `${likedImageStyle} likedAnimation` : 'unlikedAnimation',

@@ -39,7 +39,6 @@ const BaseContent: FunctionComponent<RouteComponentProps> = () => {
 
   return fetchingImages ? (
     <div
-      id='main'
       style={{
         width: '100%',
         display: 'flex',
@@ -50,7 +49,7 @@ const BaseContent: FunctionComponent<RouteComponentProps> = () => {
       <UISkeleton heights={Array(2).fill(600)} />
     </div>
   ) : (
-    <Grid container spacing={4} style={{ marginTop: '4%' }}>
+    <Grid id='main' container spacing={4} style={{ marginTop: '4%' }}>
       {allImages.map((image) => (
         <ImageCard
           key={image.date}

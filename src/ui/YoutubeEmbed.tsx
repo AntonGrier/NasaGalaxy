@@ -7,6 +7,7 @@ interface YoutubeEmbedProps {
 export const YoutubeEmbed: FunctionComponent<YoutubeEmbedProps> = ({ url }) => (
   <div className='video-responsive' style={{ height: '20rem', width: '100%' }}>
     <iframe
+      tabIndex={0}
       width='100%'
       height='100%'
       src={url}

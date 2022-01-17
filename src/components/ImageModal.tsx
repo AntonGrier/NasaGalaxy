@@ -1,10 +1,9 @@
-import { Box, Modal, Typography } from '@mui/material'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import FavoriteIcon from '@mui/icons-material/Favorite'
+import { Typography } from '@mui/material'
 import { FunctionComponent } from 'react'
 import { NasaImageMetadata } from '../models'
 import { LikeButton } from '../ui/LikeButton'
 import { LoadingImage, UIModal, YoutubeEmbed } from '../ui'
+import { getDateString } from '../utils'
 
 interface ImageModalProps {
   image: NasaImageMetadata
@@ -62,8 +61,30 @@ export const ImageModal: FunctionComponent<ImageModalProps> = ({
                 }
               />
             )}
-            <div style={{ background: '#aaaaaa' }}>
-              <LikeButton isLiked={isLiked} handleLike={handleLike} />
+            <div
+              style={{
+                display: 'flex',
+                background: '#777777',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                border: '0.5px solid black',
+              }}
+            >
+              <LikeButton
+                title={image.title}
+                isLiked={isLiked}
+                handleLike={handleLike}
+              />
+              <Typography
+                variant='caption'
+                component='h3'
+                style={{
+                  fontWeight: 'bold',
+                  marginRight: '10px',
+                }}
+              >
+                {getDateString(image.date)}
+              </Typography>
             </div>
           </div>
         </div>

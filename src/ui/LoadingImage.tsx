@@ -27,12 +27,11 @@ export const LoadingImage: FunctionComponent<
       <Skeleton
         width='100%'
         height='100%'
-        style={{
-          display: loaded ? 'none' : 'block',
-        }}
+        className={loaded ? nonVisible : visible}
       />
       <img
         {...props}
+        alt={props.alt}
         onLoad={() => setLoaded(true)}
         className={loaded ? visible : nonVisible}
       />

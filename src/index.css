@@ -37,12 +37,10 @@ body,
 }
 
 .skip-to-content-link {
-  /* background: #e77e23; */
   height: 30px;
-  left: 12%;
   padding: 8px;
   position: absolute;
-  transform: translateY(-1000%);
+  transform: translateY(-200%);
   transition: transform 0.3s;
   color: white;
   border: 1px solid white;
