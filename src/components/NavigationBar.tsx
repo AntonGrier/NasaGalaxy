@@ -34,7 +34,7 @@ export const NavigationBar: FunctionComponent = ({ children }) => {
           <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>
               <Button
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/Starbound')}
                 style={{ padding: '0 10px' }}
                 aria-label={'Navigate Home'}
               >
@@ -62,7 +62,7 @@ export const NavigationBar: FunctionComponent = ({ children }) => {
               </Link>
             </div>
             <IconButton
-              onClick={() => navigate('/liked')}
+              onClick={() => navigate('/Starbound/liked')}
               aria-label='Navigate to Liked posts'
               style={{ color: 'white' }}
               children={<FavoriteBorderIcon />}

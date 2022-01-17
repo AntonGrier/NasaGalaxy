@@ -12,8 +12,8 @@ export const App = () => {
       <ContextProviderWrapper>
         <NavigationBar>
           <Router id='router'>
-            <Content path='/' />
-            <LikedList path='liked' />
+            <Content path='/Starbound' />
+            <LikedList path='/Starbound/liked' />
           </Router>
         </NavigationBar>
       </ContextProviderWrapper>
