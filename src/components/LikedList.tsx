@@ -54,13 +54,15 @@ const BaseLikedList: FunctionComponent<RouteComponentProps> = () => {
         </div>
       ) : (
         <Grid id='main' container spacing={4} style={{ marginTop: '10px' }}>
-          {likedImages.map((image) => (
-            <ImageCard
-              key={image.date}
-              image={image}
-              isLiked={likedImageSet.has(image.date)}
-            />
-          ))}
+          {likedImages
+            .filter((image) => likedImageSet.has(image.date))
+            .map((image) => (
+              <ImageCard
+                key={image.date}
+                image={image}
+                isLiked={likedImageSet.has(image.date)}
+              />
+            ))}
         </Grid>
       )}
     </>
